@@ -26,14 +26,14 @@ STYLE_FILE := build/style/style.json
 STYLE_HEADER_FILE := style/style-header.json
 
 # Support newer `docker compose` syntax in addition to `docker-compose`
-
-ifeq (, $(shell which docker-compose))
-  DOCKER_COMPOSE_COMMAND := docker compose
-  $(info Using docker compose V2 (docker compose))
-else
-  DOCKER_COMPOSE_COMMAND := docker-compose
-  $(info Using docker compose V1 (docker-compose))
-endif
+DOCKER_COMPOSE_COMMAND := docker compose
+# ifeq (, $(shell which docker compose))
+#   DOCKER_COMPOSE_COMMAND := docker compose
+#   $(info Using docker compose V2 (docker compose))
+# else
+#   DOCKER_COMPOSE_COMMAND := docker-compose
+#   $(info Using docker compose V1 (docker-compose))
+# endif
 
 # Allow a custom docker-compose project name
 DC_PROJECT := $(or $(DC_PROJECT),$(shell (. .env; echo $${DC_PROJECT})))
