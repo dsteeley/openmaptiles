@@ -687,6 +687,38 @@ test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-te
 	@echo "Test SQL output for Import Test Data"
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql' 2>&1 | \
 		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'
+generate-osm-contours:
+	docker-compose run --rm generate-osm-contours
+
+generate-osm-file-stats:
+	@echo stats file $(file) from ${area}
+	docker-compose run --rm import-osm /bin/bash -c "cd /import; rm *.txt; osmconvert --out-statistics ${file} > ./osmstat.txt"
+	./pbfStats.sh ${area}
+
+download-geofabrik:
+	@echo ===============  download-geofabrik =======================
+	@echo Download area :   $(area)
+	@echo [[ example: make download-geofabrik  area=albania ]]
+	@echo [[ list areas:  make download-geofabrik-list       ]]
+	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
+	ls -la ./data/$(area).*
+	@echo "Generated config file: ./data/docker-compose-config.yml"
+	@echo " "
+	cat ./data/docker-compose-config.yml
+	@echo " "
+
+download-geofabrik-poly:
+	@echo ===============  download-geofabrik-poly  =======================
+	@echo Download poly :   $(area)
+	@echo [[ example: make download-geofabrik-poly  area=albania ]]
+	@echo [[ list areas:  make download-geofabrik-list       ]]
+	docker-compose run --rm import-osm /bin/bash -c "cd /import; download-geofabrik update; download-geofabrik -v download -p $(area)"
+	ls -la ./data/$(area).*
+	@echo " "
+
+# the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
+list:
+	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
 
 	@echo "Run UPDATE process on test data..."
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env

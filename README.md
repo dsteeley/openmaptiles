@@ -76,10 +76,39 @@ To work on OpenMapTiles you need Docker.
 ### Microsoft Windows Subsystem for Linux (WSL)
 
 Please use Linux `/home/user/` directory, not Windows e.g. `/mnt/c` directory.
+## OpenContourMapTiles
+
+OpenContourMapTiles is a small fork of [openmaptiles.org](http://openmaptiles.org/) to generate in one command line elevation contours vector tiles
+thanks to [phyghtmap tool](http://katze.tfiu.de/projects/phyghtmap/).
+
+Read the OpenMapTiles doc to get used about their toolchain, how to install, use it etc.
+
+- :link: Docs http://openmaptiles.org/docs
+
+## Develop
+
+To create contours tiles you need Docker.
+- Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
+- Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
+
+I work with OSX, I have no issues with it. Linux user will also feel good.
+
+If you are here you already know git and have cloned this repo!
+
+### Register
+
+You'll need to register to https://ers.cr.usgs.gov/register/ in order to allow phyghtmap to download elevation data. It's free.
+
+Once you have your user and login, create a file named .earthexplorerCredentials in the root directory of the repo with the content:
+
+```
+USER=your_user_name
+PASSWORD=your_password
+```
 
 ### Build
 
-Build the tileset.
+Build the tileset in one command line
 
 ```bash
 git clone https://github.com/openmaptiles/openmaptiles.git
@@ -93,11 +122,17 @@ or use the provided `quickstart.sh` script to automatically download and import 
 
 ```
 ./quickstart.sh <area>
+First you can edit the .env file to change the zoom levels that will be created. 0-14 is the max.
+
+Then use the quickstart script helper
+
+```
+./quickstart.sh france
 ```
 
-### Prepare the Database
+This will generate a new elevation mbtiles set of all France area... Quite long!
 
-Now start up the database container.
+Try first with a small area.
 
 ```bash
 make start-db
@@ -146,10 +181,44 @@ make clean
 make
 make import-sql
 ```
+### Results
 
-Each time you make a modification that adds a new feature to vector tiles e.g. adding new OSM tags, modify the layer 
+You'll end up if everything works with a file tiles.mbtiles in data directory.
+
+This file contains all vectors tiles with contour layer over your selected area.
+
+Contours lines step is configured to 10m.
+
+Ex: I ran it with "ile-de-france", the area around Paris, France.
+
+Launch a tile server locally to test your data
+
+```
+make start-tileserver
+```
+
+and check at http://127.0.0.1:8080/ the raw result (click on inspect link on DATA section)
+
+Result:
+![alt text](https://raw.githubusercontent.com/RomainQuidet/openmaptiles/contours/ile-de-france.png "ile-de-france raw elevation contours")
+
+Ile-de-france build took around 5 min, while French Alps area required around 40 min on my old 2013 iMac.
+
+## TODO
+
+Once you've got your tiles, you'll need to create a mapbox sytle to serve them from a mapbox tile server.
+
+The content of the tiles is quite simple:
+
+- Only line strings id "contour"
+
+- One key "ele" for the elevation in meters
+
+I'll try to create a nice style json to be ready to use.
+
+Each time you make a modification that adds a new feature to vector tiles e.g. adding new OSM tags, modify the layer
 style snippet by adding new style layer so the changes are propagated visually into the style.
-All new style layers must have the `order` value which determines the order or rendering in the map style. 
+All new style layers must have the `order` value which determines the order or rendering in the map style.
 After the layer style snippet is modified run:
 ```bash
 make build-style
@@ -174,7 +243,7 @@ make import-data            # Import external data from OpenStreetMapData, Natur
 make download area=albania  # download albania .osm.pbf file -- can be skipped if a .osm.pbf file already existing
 make import-osm             # import data into postgres
 make import-wikidata        # import Wikidata
-make import-sql             # create / import sql functions 
+make import-sql             # create / import sql functions
 make generate-bbox-file     # compute data bbox -- not needed for the whole planet or for downloaded area by `make download`
 make generate-tiles-pg      # generate tiles
 ```
