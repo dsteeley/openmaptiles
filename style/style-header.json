@@ -2,17 +2,17 @@
   "version": 8,
   "name": "OSM OpenMapTiles",
   "id": "openmaptiles",
-  "center": [
-    0,
-    0
-  ],
   "zoom": 1,
   "bearing": 0,
   "pitch": 0,
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "mbtiles:///data/tiles.mbtiles"
+      "url": "mbtiles:///data/scotland.mbtiles"
+    },
+    "contour": {
+      "type": "vector",
+      "url": "mbtiles:///data/scotland_contours.mbtiles"
     },
     "attribution": {
       "attribution": "<a href=\"https://www.openmaptiles.org/\" target=\"_blank\">&copy; OpenMapTiles</a> <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">&copy; OpenStreetMap contributors</a>",
@@ -21,6 +21,10 @@
   },
   "glyphs": "{fontstack}/{range}.pbf",
   "sprite": "sprite",
+  "center":[
+    -3.669,
+    56.946
+  ],
   "layers": [
     {
       "id": "background",

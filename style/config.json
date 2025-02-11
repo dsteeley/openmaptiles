@@ -1,22 +1,31 @@
 {
   "options": {
     "paths": {
-      "fonts": "/data/fonts",
-      "sprites": "/build/style",
-      "styles": "/build/style"
+      "root": "/data",
+      "fonts": "fonts",
+      "styles": "/build/style",
+      "mbtiles": "/data"
     }
   },
   "styles": {
-    "OSM OpenMapTiles": {
-      "style": "style.json",
+    "osm-bright-topo": {
+      "style": "osm-bright-topo/style.json",
       "tilejson": {
-        "type": "overlay"
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
       }
     }
   },
   "data": {
     "openmaptiles": {
-      "mbtiles": "/data/tiles.mbtiles"
+      "mbtiles": "/data/scotland.mbtiles"
+    },
+    "contour": {
+      "mbtiles": "/data/scotland_contours.mbtiles"
     }
   }
 }

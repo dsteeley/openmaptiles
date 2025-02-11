@@ -430,6 +430,11 @@ import-osm: all start-db-nowait
 	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
+.PHONY: append-osm
+append-osm: all start-db-nowait
+	@$(assert_area_is_given)
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && APPEND_MODE=true import-osm $(PBF_FILE)'
+
 .PHONY: start-update-osm
 start-update-osm: start-db
 	@$(assert_area_is_given)
@@ -695,17 +700,17 @@ generate-osm-file-stats:
 	docker-compose run --rm import-osm /bin/bash -c "cd /import; rm *.txt; osmconvert --out-statistics ${file} > ./osmstat.txt"
 	./pbfStats.sh ${area}
 
-download-geofabrik:
-	@echo ===============  download-geofabrik =======================
-	@echo Download area :   $(area)
-	@echo [[ example: make download-geofabrik  area=albania ]]
-	@echo [[ list areas:  make download-geofabrik-list       ]]
-	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
-	ls -la ./data/$(area).*
-	@echo "Generated config file: ./data/docker-compose-config.yml"
-	@echo " "
-	cat ./data/docker-compose-config.yml
-	@echo " "
+# download-geofabrik:
+# 	@echo ===============  download-geofabrik =======================
+# 	@echo Download area :   $(area)
+# 	@echo [[ example: make download-geofabrik  area=albania ]]
+# 	@echo [[ list areas:  make download-geofabrik-list       ]]
+# 	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
+# 	ls -la ./data/$(area).*
+# 	@echo "Generated config file: ./data/docker-compose-config.yml"
+# 	@echo " "
+# 	cat ./data/docker-compose-config.yml
+# 	@echo " "
 
 download-geofabrik-poly:
 	@echo ===============  download-geofabrik-poly  =======================

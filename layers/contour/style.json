@@ -55,7 +55,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.5)",
         "text-halo-width": 1.5
       },
-      "order": 208
+      "order": 199
     },
     {
       "id": "contour_index",
@@ -84,7 +84,7 @@
         "line-opacity": 0.4,
         "line-width": 1.1
       },
-      "order": 209
+      "order": 200
     },
     {
       "id": "contour",
@@ -113,7 +113,7 @@
         "line-opacity": 0.3,
         "line-width": 0.6
       },
-      "order": 210
+      "order": 201
     }
   ]
 }

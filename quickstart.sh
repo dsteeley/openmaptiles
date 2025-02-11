@@ -56,7 +56,7 @@ fi
 if [ $# -eq 2 ]; then
   osm_server=$2
 fi
-testpolyfile=${osm_area}.poly
+testpolyfile=${area}.poly
 testdata="osm_data_to_be_generated"
 
 ##  Min versions ...
@@ -200,7 +200,7 @@ if [ !  -f ./data/${testpolyfile} ]; then
     echo "-------------------------------------------------------------------------------------"
     echo "====> : Downloading poly $testpolyfile   "
     rm -f ./data/*
-    make download-geofabrik-poly      area=${osm_area}
+    make download-geofabrik-poly      area=${area}
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
@@ -248,7 +248,7 @@ if [ !  -f ./data/${testdata} ]; then
 fi
 
 
-make generate-osm-file-stats file=${testdata} area=${osm_area}
+make generate-osm-file-stats file=${testdata} area=${area}
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Osm metadata : $testdata   "
@@ -315,7 +315,6 @@ echo "====> : Start importing OpenStreetMap data: ${area} -> imposm3[./build/map
 echo "====> : Drop and Recreate PostgreSQL  public schema "
 # Drop all PostgreSQL tables
 # This is add an extra safe belt , if the user modify the docker volume seetings
-make forced-clean-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -341,9 +340,9 @@ echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/bl
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
 make import-sql
-echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
-echo "      : Source code: https://github.com/openmaptiles/import-sql "
-docker-compose run --rm import-sql
+# echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
+# echo "      : Source code: https://github.com/openmaptiles/import-sql "
+# docker-compose run --rm import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -377,10 +376,10 @@ echo "      : Output MBTiles: $MBTILES_FILE  "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/generate-tiles "
 make generate-tiles-pg
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Stop postserve service "
-docker-compose stop postserve
+# echo " "
+# echo "-------------------------------------------------------------------------------------"
+# echo "====> : Stop postserve service "
+# docker-compose stop postserve
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

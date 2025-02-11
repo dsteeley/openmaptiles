@@ -11,4 +11,3 @@ tables:
     mapping:
       contour:
       - elevation
-    type: linestring
